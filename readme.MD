@@ -1,10 +1,18 @@
 # NTLM-proxy
 
-This is born to call the navision API without fighting the NTLM. the idea is to have this service deployed (perhaps on the same machine) and use this proxy for communication with navision.
+This is born to call a NTLM API without fighting the NTLM. the idea is to have this service deployed (perhaps on the same machine) and use this proxy for communication with NTLM.
 
 ## NTLM-proxy Settings
 
-environment vars:
+### command line args:
+- port
+- ntlm_url
+- ntlm_username
+- ntlm_password
+- basicauth_username
+- basicauth_password
+
+### environment vars:
 - SERVER_PORT (default is 8080)
 - DEFAULT_NTLM_URL (when NTLM_URL not informed in request, DEFAULT_NTLM_URL is used)
 - DEFAULT_NTLM_USERNAME (when NTLM_USERNAME not informed in request, DEFAULT_NTLM_USERNAME is used)
@@ -23,12 +31,7 @@ http request headers:
 
 Start the server
 ```
-$ set DEFAULT_NTLM_URL=http://NTLM-server:7047
-$ set DEFAULT_NTLM_USERNAME=username
-$ set DEFAULT_NTLM_PASSWORD=password
-$ set BASICAUTH_USERNAME=clientuser
-$ set BASICAUTH_PASSWORD=clientpass
-$ NTLM-proxy.exe
+$ NTLM-proxy.exe -port 8080 -ntlm_url=http://NTLM-server:7047 -ntlm_username=username -ntlm_password=password -basicauth_username=clientuser -basicauth_password=clientpass
 ```
 
 Call the API
@@ -43,3 +46,9 @@ $ docker build -t ntlm-proxy .
 $ docker run -d -p 8080:8080 -e DEFAULT_NTLM_URL=http://NTLM-server:7047 -e DEFAULT_NTLM_USERNAME=username -e DEFAULT_NTLM_PASSWORD=password --name ntlm-proxy ntlm-proxy
 ```
 
+## Deploy as a windows service
+
+```
+$ sc.exe create NTLM-proxy binPath= "C:\filepath\NTLM-proxy.exe -port 8081 -ntlm_url=http://NTLM-server:7047 -ntlm_username=username -ntlm_password=password -basicauth_username=clientuser -basicauth_password=clientpass"
+$ sc.exe start NTLM-proxy 
+```
